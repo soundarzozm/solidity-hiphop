@@ -5,10 +5,12 @@ import abi from "./utils/WavePortal.json";
 import "./App.css";
 
 const App = () => {
-	const [currentAccount, setCurrentAccount] = useState("");
 	const [waves, setWaves] = useState(0);
+	const [currentAccount, setCurrentAccount] = useState("");
+	const [allWaves, setAllWaves] = useState([]);
+	const [message, setMessage] = useState("");
 
-	const contractAddress = "0xba995f2Ed191a1B2d8fb6665BFfD1Ac8F5451AA5";
+	const contractAddress = "0x0e44EcBa03eD7c78f7d5E2f013DD652e30C72Bd1";
 	const contractABI = abi.abi;
 
 	const checkIfWalletIsConnected = async () => {
@@ -28,6 +30,7 @@ const App = () => {
 				const account = accounts[0];
 				console.log("Found an authorized account:", account);
 				setCurrentAccount(account);
+				getAllWaves()
 			} else {
 				console.log("No authorized account found.");
 			}
@@ -97,7 +100,7 @@ const App = () => {
 				console.log("Retrieved total wave count:", count.toNumber());
 				setWaves(count.toNumber());
 
-				const waveTxn = await wavePortalContract.wave();
+				const waveTxn = await wavePortalContract.wave(message);
 				console.log("Mining...", waveTxn.hash);
 
 				await waveTxn.wait();
@@ -114,28 +117,85 @@ const App = () => {
 		}
 	};
 
+	const getAllWaves = async () => {
+		try {
+			const { ethereum } = window;
+			if (ethereum) {
+				const provider = new ethers.providers.Web3Provider(ethereum);
+				const signer = provider.getSigner();
+				const wavePortalContract = new ethers.Contract(
+					contractAddress,
+					contractABI,
+					signer
+				);
+
+				const waves = await wavePortalContract.getAllWaves();
+
+				let wavesCleaned = [];
+				waves.forEach((wave) => {
+					wavesCleaned.push({
+						address: wave.waver,
+						timestamp: new Date(wave.timestamp * 1000),
+						message: wave.message,
+					});
+				});
+				setAllWaves(wavesCleaned);
+			} else {
+				console.log("Ethereum object does not exist.");
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		checkIfWalletIsConnected();
-		getWaveCount()
+		getWaveCount();
 	}, []);
+
+	useEffect(() => {
+		getAllWaves()
+		setMessage("")
+	}, [waves])
 
 	return (
 		<div className="mainContainer">
 			<div className="dataContainer">
-				<div className="header">👋 Hey there!</div>
+				<div className="header">hey friend.</div>
 
-				<div className="bio">OKLAMA.</div>
-				<div className="bio">Count: {waves}</div>
+				<div className="bio">drop a link.</div>
+				<div className="bio">count: {waves}</div>
 
 				<button className="waveButton" onClick={wave}>
-					Say hi!
+					send.
 				</button>
+				<input
+					className="inputField"
+					value={message}
+					placeholder="spotify link here."
+					onChange={(e) => {
+						setMessage(e.target.value);
+					}}
+				/>
 
 				{!currentAccount && (
 					<button className="waveButton" onClick={connectWallet}>
-						Connect Wallet
+						connect wallet.
 					</button>
 				)}
+
+				{allWaves.map((wave, index) => {
+					return (
+						<div
+							key={index}
+							style={{ marginTop: "16px", padding: "8px" }}
+						>
+							<div>address: {wave.address}</div>
+							<div>time: {wave.timestamp.toString()}</div>
+							<div>message: {wave.message}</div>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);
