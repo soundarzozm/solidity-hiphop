@@ -10,7 +10,7 @@ const App = () => {
 	const [allWaves, setAllWaves] = useState([]);
 	const [message, setMessage] = useState("");
 
-	const contractAddress = "0x0e44EcBa03eD7c78f7d5E2f013DD652e30C72Bd1";
+	const contractAddress = "0xb7CC736fdCC20181547eca7C17bec7842cA6bbE4";
 	const contractABI = abi.abi;
 
 	const checkIfWalletIsConnected = async () => {
@@ -154,9 +154,39 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		getAllWaves();
-		setMessage("");
-	}, [waves]);
+		let wavePortalContract;
+
+		const onNewWave = (from, timestamp, message) => {
+			console.log("NewWave", from, timestamp, message);
+			setAllWaves((prevState) => [
+				...prevState,
+				{
+					address: from,
+					timestamp: new Date(timestamp * 1000),
+					message: message,
+				},
+			]);
+			setMessage("");
+		};
+
+		if (window.ethereum) {
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			const signer = provider.getSigner();
+
+			wavePortalContract = new ethers.Contract(
+				contractAddress,
+				contractABI,
+				signer
+			);
+			wavePortalContract.on("NewWave", onNewWave);
+		}
+
+		return () => {
+			if (wavePortalContract) {
+				wavePortalContract.off("NewWave", onNewWave);
+			}
+		};
+	}, []);
 
 	return (
 		<div className="mainContainer">
@@ -168,7 +198,7 @@ const App = () => {
 
 				<input
 					className="inputField"
-					style={{textAlign: 'center'}}
+					style={{ textAlign: "center" }}
 					value={message}
 					placeholder="spotify link here."
 					onChange={(e) => {
