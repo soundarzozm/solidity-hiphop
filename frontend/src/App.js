@@ -10,7 +10,7 @@ const App = () => {
 	const [allWaves, setAllWaves] = useState([]);
 	const [message, setMessage] = useState("");
 
-	const contractAddress = "0xb7CC736fdCC20181547eca7C17bec7842cA6bbE4";
+	const contractAddress = "0x074737bA78F7f16bE3bd53d0Df6392d3735c1230";
 	const contractABI = abi.abi;
 
 	const checkIfWalletIsConnected = async () => {
@@ -188,27 +188,34 @@ const App = () => {
 		};
 	}, []);
 
+	useEffect(() => {
+		getAllWaves();
+	}, [currentAccount]);
+
 	return (
 		<div className="mainContainer">
 			<div className="dataContainer">
 				<div className="header">hey friend.</div>
 
-				<div className="bio">drop a link.</div>
-				<div className="bio">count: {waves}</div>
+				{currentAccount != "" ? (
+					<>
+						<div className="bio">drop a link.</div>
+						<div className="bio">count: {waves}</div>
+						<input
+							className="inputField"
+							style={{ textAlign: "center" }}
+							value={message}
+							placeholder="spotify link here."
+							onChange={(e) => {
+								setMessage(e.target.value);
+							}}
+						/>
 
-				<input
-					className="inputField"
-					style={{ textAlign: "center" }}
-					value={message}
-					placeholder="spotify link here."
-					onChange={(e) => {
-						setMessage(e.target.value);
-					}}
-				/>
-
-				<button className="waveButton" onClick={wave}>
-					send.
-				</button>
+						<button className="waveButton" onClick={wave}>
+							send.
+						</button>
+					</>
+				) : null}
 
 				{!currentAccount && (
 					<button className="waveButton" onClick={connectWallet}>
