@@ -30,7 +30,7 @@ const App = () => {
 				const account = accounts[0];
 				console.log("Found an authorized account:", account);
 				setCurrentAccount(account);
-				getAllWaves()
+				getAllWaves();
 			} else {
 				console.log("No authorized account found.");
 			}
@@ -154,9 +154,9 @@ const App = () => {
 	}, []);
 
 	useEffect(() => {
-		getAllWaves()
-		setMessage("")
-	}, [waves])
+		getAllWaves();
+		setMessage("");
+	}, [waves]);
 
 	return (
 		<div className="mainContainer">
@@ -166,17 +166,19 @@ const App = () => {
 				<div className="bio">drop a link.</div>
 				<div className="bio">count: {waves}</div>
 
-				<button className="waveButton" onClick={wave}>
-					send.
-				</button>
 				<input
 					className="inputField"
+					style={{textAlign: 'center'}}
 					value={message}
 					placeholder="spotify link here."
 					onChange={(e) => {
 						setMessage(e.target.value);
 					}}
 				/>
+
+				<button className="waveButton" onClick={wave}>
+					send.
+				</button>
 
 				{!currentAccount && (
 					<button className="waveButton" onClick={connectWallet}>
