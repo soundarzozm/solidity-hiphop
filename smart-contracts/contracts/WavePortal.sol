@@ -22,7 +22,7 @@ contract WavePortal {
 	mapping(address => uint256) public lastWavedAt;
 
 	constructor() payable {
-		console.log("Yo, we the smart contract and we smart as hell!");
+		console.log("Smart contract established.");
 		seed = (block.timestamp + block.difficulty) % 100;
 	}
 
@@ -68,7 +68,7 @@ contract WavePortal {
 	}
 
 	function getWalletAddresses() public view returns (address[] memory) {
-		console.log("These are the wallet addresses!");
+		console.log("Wallet addresses retrieved.");
 		return walletAddresses;
 	}
 }
