@@ -5,15 +5,15 @@ import abi from "./utils/WavePortal.json";
 import "./App.css";
 
 const App = () => {
-	const [waves, setWaves] = useState(0);
-	const [currentAccount, setCurrentAccount] = useState("");
-	const [allWaves, setAllWaves] = useState([]);
-	const [message, setMessage] = useState("");
+	let [waves, setWaves] = useState(0);
+	let [currentAccount, setCurrentAccount] = useState("");
+	let [allWaves, setAllWaves] = useState([]);
+	let [message, setMessage] = useState("");
 
-	const contractAddress = "0x074737bA78F7f16bE3bd53d0Df6392d3735c1230";
-	const contractABI = abi.abi;
+	let contractAddress = "0x074737bA78F7f16bE3bd53d0Df6392d3735c1230";
+	let contractABI = abi.abi;
 
-	const checkIfWalletIsConnected = async () => {
+	let checkIfWalletIsConnected = async () => {
 		try {
 			const { ethereum } = window;
 
@@ -39,7 +39,7 @@ const App = () => {
 		}
 	};
 
-	const connectWallet = async () => {
+	let connectWallet = async () => {
 		try {
 			const { ethereum } = window;
 
@@ -59,7 +59,7 @@ const App = () => {
 		}
 	};
 
-	const getWaveCount = async () => {
+	let getWaveCount = async () => {
 		try {
 			const { ethereum } = window;
 
@@ -83,7 +83,7 @@ const App = () => {
 		}
 	};
 
-	const wave = async () => {
+	let wave = async () => {
 		try {
 			const { ethereum } = window;
 
@@ -117,7 +117,7 @@ const App = () => {
 		}
 	};
 
-	const getAllWaves = async () => {
+	let getAllWaves = async () => {
 		try {
 			const { ethereum } = window;
 			if (ethereum) {
